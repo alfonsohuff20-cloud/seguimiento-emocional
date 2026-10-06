@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Registro">
+<meta name="theme-color" content="#fbf7f0">
+<meta name="robots" content="noindex,nofollow">
+<title>Seguimiento Emocional – Registro</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#fbf7f0;--card:#fffdf9;--fg:#2e2a36;--muted:#8c8496;--line:#ece4d8;--soft:#f4eee4;
+  --accent:#8e7cf0;--accent-fg:#fff;--danger:#d9707a;--ok:#4fae93;--warn:#e2a14a;--chip-on:#2e2a36;
+  --sat:env(safe-area-inset-top);--sab:env(safe-area-inset-bottom);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+[data-theme="oscuro"]{
+  --bg:#07070b;--card:#111118;--fg:#ecebf7;--muted:#8a89a3;--line:#23232f;--soft:#1a1a24;
+  --accent:#00e5ff;--accent-fg:#00161a;--danger:#ff4d7d;--ok:#00f5a0;--warn:#ffb300;--chip-on:#07070b;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-size:16px;line-height:1.4;-webkit-text-size-adjust:100%}
+body{padding-top:var(--sat);overscroll-behavior-y:none}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-user-select:none;user-select:none}
+[hidden]{display:none!important}
+h1,h2,h3{margin:0;font-weight:650}
+.muted{color:var(--muted)} .small{font-size:.82rem}
+.card{background:var(--card);border-radius:18px;padding:14px 16px;margin:10px 12px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05)}
+[data-theme="oscuro"] .card{box-shadow:0 0 0 1px var(--line)}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:12px 16px;font-weight:600;min-height:46px}
+.btn.primary{background:var(--accent);color:var(--accent-fg);border:0}
+.btn.danger{color:var(--danger)}
+.btn.block{width:100%;display:block}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.4}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+input[type=datetime-local],input[type=number]{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:16px;min-height:44px}
+.badge{display:inline-block;min-width:20px;padding:1px 7px;border-radius:99px;background:var(--danger);color:#fff;font-size:.72rem;font-weight:700;text-align:center}
+.pill{display:inline-flex;background:var(--soft);border-radius:12px;padding:3px}
+.pill button{border:0;background:transparent;padding:8px 14px;border-radius:10px;color:var(--muted);font-weight:600}
+.pill button.on{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+
+/* PIN */
+#pin{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);z-index:50;padding-top:var(--sat)}
+#pin .logo{width:64px;height:64px;border-radius:18px;background:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+#dots{display:flex;gap:14px;margin:18px 0 26px;height:16px}
+#dots span{width:14px;height:14px;border-radius:50%;border:2px solid var(--muted)}
+#dots span.f{background:var(--accent);border-color:var(--accent)}
+#pad{display:grid;grid-template-columns:repeat(3,78px);gap:16px}
+#pad button{height:78px;border-radius:50%;border:1px solid var(--line);background:var(--card);font-size:1.7rem}
+#pad button:active{background:var(--soft)}
+#pad button.t{border:0;background:transparent;font-size:1rem;color:var(--muted)}
+.shake{animation:sh .35s}@keyframes sh{25%,75%{transform:translateX(-8px)}50%{transform:translateX(8px)}}
+
+/* app */
+header.top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);padding:10px 14px 8px;border-bottom:1px solid var(--line)}
+main{padding-bottom:calc(150px + var(--sab))}
+nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;background:color-mix(in srgb,var(--card) 92%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:6px 6px calc(6px + var(--sab))}
+nav.bottom button{flex:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;color:var(--muted);font-size:.72rem;font-weight:600;position:relative}
+nav.bottom button .i{font-size:1.35rem;line-height:1}
+nav.bottom button.on{color:var(--accent)}
+nav.bottom .badge{position:absolute;top:0;left:calc(50% + 6px)}
+#savebar{position:fixed;left:0;right:0;bottom:calc(62px + var(--sab));z-index:15;padding:8px 12px}
+#savebar .btn{width:100%;font-size:1.08rem;min-height:54px;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+
+details.sec{background:var(--card);border-radius:18px;margin:10px 12px;overflow:hidden}
+[data-theme="oscuro"] details.sec{box-shadow:0 0 0 1px var(--line)}
+details.sec>summary{list-style:none;padding:14px 16px;display:flex;align-items:center;gap:8px;font-weight:650;font-size:1.05rem}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary .chev{margin-left:auto;color:var(--muted);transition:transform .2s}
+details.sec[open]>summary .chev{transform:rotate(90deg)}
+.cnt{font-size:.75rem;color:var(--muted);background:var(--soft);border-radius:99px;padding:1px 8px;font-weight:600}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
+.it{padding:12px 16px;border-top:1px solid var(--line)}
+.it-h{display:flex;align-items:center;gap:8px;min-height:28px}
+.it-n{font-weight:600}
+.it-v{margin-left:auto;font-variant-numeric:tabular-nums;font-size:.95rem}
+.it.u .it-v{color:var(--muted)}
+.x{border:0;background:var(--soft);color:var(--muted);width:30px;height:30px;border-radius:50%;font-size:.9rem}
+.hint{font-size:.74rem;color:var(--muted)}
+/* slider propio: arrastre horizontal, tap = salto, scroll vertical intacto */
+.sl{position:relative;height:44px;touch-action:pan-y;margin:2px 4px}
+.sl .tr{position:absolute;left:0;right:0;top:18px;height:8px;border-radius:99px;background:var(--soft)}
+.sl .fi{position:absolute;left:0;top:18px;height:8px;border-radius:99px;background:var(--c)}
+.sl .th{position:absolute;top:8px;width:28px;height:28px;margin-left:-14px;border-radius:50%;background:var(--card);border:3px solid var(--c);box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.it.u .sl .fi{background:var(--line)} .it.u .sl .th{border-color:var(--muted)}
+.chips{display:flex;gap:7px;overflow-x:auto;padding:6px 0 2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+.chips.wrap{flex-wrap:wrap;overflow:visible}
+.chip{flex:none;border:1px solid var(--line);background:var(--soft);border-radius:99px;padding:8px 14px;font-size:.88rem;white-space:nowrap}
+.chip.on{background:var(--c,var(--accent));border-color:transparent;color:var(--chip-on);font-weight:650}
+.ctx{padding:12px 16px;border-top:1px solid var(--line)}
+.step{display:flex;align-items:center;gap:8px}
+.step button{width:46px;height:46px;border-radius:14px;border:1px solid var(--line);background:var(--soft);font-size:1.4rem}
+.step .val{min-width:84px;text-align:center;font-weight:650;font-variant-numeric:tabular-nums}
+.ctx.u .val{color:var(--muted);font-weight:500}
+.rec{display:flex;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+.rec:first-of-type{border-top:0}
+.rec .h{font-weight:700;width:50px;font-variant-numeric:tabular-nums}
+.rec .b{flex:1;min-width:0;font-size:.86rem}
+.st{font-size:.72rem;font-weight:700;border-radius:99px;padding:2px 8px}
+.st.p{background:color-mix(in srgb,var(--warn) 22%,transparent);color:var(--warn)}
+.st.e{background:color-mix(in srgb,var(--ok) 20%,transparent);color:var(--ok)}
+.note{font-size:.84rem;color:var(--muted);background:var(--soft);border-radius:12px;padding:10px 12px}
+#toast{position:fixed;left:50%;top:calc(14px + var(--sat));transform:translateX(-50%) translateY(-20px);opacity:0;transition:.25s;z-index:100;background:var(--fg);color:var(--bg);padding:11px 18px;border-radius:14px;font-weight:600;pointer-events:none;max-width:92vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#dlg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:90;display:flex;align-items:flex-end}
+#dlg>div{background:var(--card);width:100%;border-radius:22px 22px 0 0;padding:18px 16px calc(18px + var(--sab))}
+</style>
+</head>
+<body>
+<div id="pin">
+  <div class="logo"><svg width="38" height="38" viewBox="0 0 64 64"><path d="M6 36 L18 36 L25 18 L35 48 L42 28 L47 36 L58 36" fill="none" stroke="var(--accent-fg)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <h2>Seguimiento Emocional</h2>
+  <div class="muted small" id="pinmsg">Ingresá tu PIN</div>
+  <div id="dots"></div>
+  <div id="pad"></div>
+</div>
+
+<div id="app" hidden>
+  <header class="top"><div class="row"><h2 id="titulo">Registrar</h2><div class="spacer"></div><button class="x" id="btn-lock" aria-label="Bloquear">🔒</button></div></header>
+  <main>
+    <section id="v-reg"></section>
+    <section id="v-hist" hidden></section>
+    <section id="v-env" hidden></section>
+    <section id="v-cfg" hidden></section>
+  </main>
+  <div id="savebar"><button class="btn primary" id="btn-guardar">Guardar</button></div>
+  <nav class="bottom">
+    <button data-v="reg" class="on"><span class="i">✎</span>Registrar</button>
+    <button data-v="hist"><span class="i">☰</span>Registros</button>
+    <button data-v="env"><span class="i">⇪</span>Enviar a la PC<span class="badge" id="nb" hidden></span></button>
+    <button data-v="cfg"><span class="i">⚙</span>Ajustes</button>
+  </nav>
+</div>
+<div id="toast"></div>
+<div id="dlg" hidden><div id="dlgc"></div></div>
+
+<script>
+'use strict';
+/* Seguimiento Emocional – app de registro para el celular (PWA).
+   Guarda los registros en el teléfono y los envía a la app de escritorio como archivo JSON (esquema v2). */
+const DEFAULTS = {"categorias":[{"id":"mentales","nombre":"Mentales","orden":0,"activo":true,"color":{"claro":"#a99bf0","oscuro":"#a64dff"}},{"id":"fisicas","nombre":"Físicas","orden":1,"activo":true,"color":{"claro":"#86cdb4","oscuro":"#00f5a0"}},{"id":"relacion","nombre":"Relación","orden":2,"activo":true,"color":{"claro":"#f2a0bb","oscuro":"#ff2bd6"}}],"items":[{"id":"alegria","nombre":"Alegría","categoria":"mentales","color":{"claro":"#db8f76","oscuro":"#ff5e29"},"polaridad":"positiva","activo":true,"orden":0,"favorito":true},{"id":"tristeza","nombre":"Tristeza","categoria":"mentales","color":{"claro":"#76dbad","oscuro":"#29ff9d"},"polaridad":"negativa","activo":true,"orden":1,"favorito":false},{"id":"ansiedad","nombre":"Ansiedad","categoria":"mentales","color":{"claro":"#ca76db","oscuro":"#db29ff"},"polaridad":"negativa","activo":true,"orden":2,"favorito":true},{"id":"enojo_irritabilidad","nombre":"Enojo/Irritabilidad","categoria":"mentales","color":{"claro":"#cedb76","oscuro":"#e4ff29"},"polaridad":"negativa","activo":true,"orden":3,"favorito":true},{"id":"miedo","nombre":"Miedo","categoria":"mentales","color":{"claro":"#76b1db","oscuro":"#29a6ff"},"polaridad":"negativa","activo":true,"orden":4,"favorito":false},{"id":"calma","nombre":"Calma","categoria":"mentales","color":{"claro":"#db7693","oscuro":"#ff2967"},"polaridad":"positiva","activo":true,"orden":5,"favorito":true},{"id":"motivacion","nombre":"Motivación","categoria":"mentales","color":{"claro":"#76db76","oscuro":"#29ff29"},"polaridad":"positiva","activo":true,"orden":6,"favorito":false},{"id":"estres","nombre":"Estrés","categoria":"mentales","color":{"claro":"#9376db","oscuro":"#6729ff"},"polaridad":"negativa","activo":true,"orden":7,"favorito":false},{"id":"frustracion","nombre":"Frustración","categoria":"mentales","color":{"claro":"#dbb176","oscuro":"#ffa629"},"polaridad":"negativa","activo":true,"orden":8,"favorito":false},{"id":"concentracion","nombre":"Concentración","categoria":"mentales","color":{"claro":"#76dbce","oscuro":"#29ffe4"},"polaridad":"positiva","activo":true,"orden":9,"favorito":false},{"id":"autoestima","nombre":"Autoestima","categoria":"mentales","color":{"claro":"#db76ca","oscuro":"#ff29db"},"polaridad":"positiva","activo":true,"orden":10,"favorito":false},{"id":"energia","nombre":"Energía","categoria":"fisicas","color":{"claro":"#acdb76","oscuro":"#9dff29"},"polaridad":"positiva","activo":true,"orden":0,"favorito":true},{"id":"cansancio","nombre":"Cansancio","categoria":"fisicas","color":{"claro":"#768fdb","oscuro":"#295eff"},"polaridad":"negativa","activo":true,"orden":1,"favorito":true},{"id":"tension_muscular","nombre":"Tensión muscular","categoria":"fisicas","color":{"claro":"#db7a76","oscuro":"#ff3229"},"polaridad":"negativa","activo":true,"orden":2,"favorito":false},{"id":"dolor_de_cabeza","nombre":"Dolor de cabeza","categoria":"fisicas","color":{"claro":"#76db98","oscuro":"#29ff71"},"polaridad":"negativa","activo":true,"orden":3,"favorito":false},{"id":"malestar_digestivo","nombre":"Malestar digestivo","categoria":"fisicas","color":{"claro":"#b576db","oscuro":"#af29ff"},"polaridad":"negativa","activo":true,"orden":4,"favorito":false},{"id":"apetito","nombre":"Apetito","categoria":"fisicas","color":{"claro":"#dbd276","oscuro":"#ffee29"},"polaridad":"negativa","activo":true,"orden":5,"favorito":false},{"id":"inquietud_fisica","nombre":"Inquietud física","categoria":"fisicas","color":{"claro":"#76c5db","oscuro":"#29d2ff"},"polaridad":"negativa","activo":true,"orden":6,"favorito":false},{"id":"satisfaccion_general","nombre":"Satisfacción general","categoria":"relacion","color":{"claro":"#db76a8","oscuro":"#ff2993"},"polaridad":"positiva","activo":true,"orden":0,"favorito":true},{"id":"intimidad","nombre":"Intimidad","categoria":"relacion","color":{"claro":"#8bdb76","oscuro":"#55ff29"},"polaridad":"positiva","activo":true,"orden":1,"favorito":false},{"id":"carino","nombre":"Cariño","categoria":"relacion","color":{"claro":"#7f76db","oscuro":"#3b29ff"},"polaridad":"positiva","activo":true,"orden":2,"favorito":false},{"id":"agobio","nombre":"Agobio","categoria":"relacion","color":{"claro":"#db9c76","oscuro":"#ff7a29"},"polaridad":"negativa","activo":true,"orden":3,"favorito":false},{"id":"agotamiento","nombre":"Agotamiento","categoria":"relacion","color":{"claro":"#76dbb9","oscuro":"#29ffb8"},"polaridad":"negativa","activo":true,"orden":4,"favorito":false},{"id":"comunicacion","nombre":"Comunicación","categoria":"relacion","color":{"claro":"#d776db","oscuro":"#f729ff"},"polaridad":"positiva","activo":true,"orden":5,"favorito":false},{"id":"conexion","nombre":"Conexión","categoria":"relacion","color":{"claro":"#c1db76","oscuro":"#c9ff29"},"polaridad":"positiva","activo":true,"orden":6,"favorito":false}],"desencadenantes":[{"id":"facultad","nombre":"Facultad","activo":true,"orden":0},{"id":"examen","nombre":"Examen","activo":true,"orden":1},{"id":"trabajo","nombre":"Trabajo","activo":true,"orden":2},{"id":"pareja","nombre":"Pareja","activo":true,"orden":3},{"id":"familia","nombre":"Familia","activo":true,"orden":4},{"id":"amigos","nombre":"Amigos","activo":true,"orden":5},{"id":"sueno","nombre":"Sueño","activo":true,"orden":6},{"id":"salud","nombre":"Salud","activo":true,"orden":7},{"id":"dinero","nombre":"Dinero","activo":true,"orden":8},{"id":"clima","nombre":"Clima","activo":true,"orden":9},{"id":"redes_sociales","nombre":"Redes sociales","activo":true,"orden":10},{"id":"soledad","nombre":"Soledad","activo":true,"orden":11},{"id":"sin_desencadenante_claro","nombre":"Sin desencadenante claro","activo":true,"orden":12}],"variables":[{"id":"sueno","nombre":"Horas de sueño","unidad":"h","paso":0.5,"min":0,"max":14,"tipo":"numero","activo":true,"orden":0,"defecto":7,"frase":"Cuando dormís {rango}","rangos":[{"etiqueta":"menos de 4 h","desde":null,"hasta":3.99},{"etiqueta":"entre 4 y 6 h","desde":4,"hasta":5.99},{"etiqueta":"entre 6 y 8 h","desde":6,"hasta":8},{"etiqueta":"más de 8 h","desde":8.01,"hasta":null}]},{"id":"mate","nombre":"Termos de mate","unidad":"termos","paso":0.25,"min":0,"max":4,"tipo":"numero","activo":true,"orden":1,"defecto":0,"equivalencia":{"factor":1,"unidad":"L"},"frase":"Cuando tomás {rango}","rangos":[{"etiqueta":"nada de mate","frase":"Cuando no tomás mate","desde":null,"hasta":0},{"etiqueta":"entre ¼ y ½ termo de mate","desde":0.25,"hasta":0.5},{"etiqueta":"entre ¾ y 1 termo de mate","desde":0.75,"hasta":1},{"etiqueta":"más de 1 termo de mate","desde":1.01,"hasta":null}]},{"id":"dias_examen","nombre":"Días al próximo examen","unidad":"días","paso":1,"min":0,"max":365,"tipo":"examen","activo":true,"orden":2,"defecto":7,"frase":"Cuando faltan {rango} para un examen","rangos":[{"etiqueta":"0 a 3 días","desde":0,"hasta":3},{"etiqueta":"4 a 7 días","desde":4,"hasta":7},{"etiqueta":"8 a 14 días","desde":8,"hasta":14},{"etiqueta":"más de 14 días","desde":15,"hasta":null}]},{"id":"momento","nombre":"Momento del día","tipo":"opcion","activo":true,"opciones":[{"id":"manana","nombre":"Mañana","frase":"A la mañana"},{"id":"mediodia","nombre":"Mediodía","frase":"Al mediodía"},{"id":"tarde","nombre":"Tarde","frase":"A la tarde"},{"id":"noche","nombre":"Noche","frase":"A la noche"},{"id":"madrugada","nombre":"Madrugada","frase":"De madrugada"}],"orden":3},{"id":"clima","nombre":"Estado del tiempo","tipo":"opcion","activo":true,"opciones":[{"id":"soleado","nombre":"Soleado","frase":"Cuando está soleado"},{"id":"nublado","nombre":"Nublado","frase":"Cuando está nublado"},{"id":"lluvia","nombre":"Lluvia","frase":"Cuando llueve"}],"orden":4},{"id":"en_casa","nombre":"Me encuentro en mi casa","tipo":"opcion","activo":true,"opciones":[{"id":"si","nombre":"Sí","frase":"Cuando estás en tu casa"},{"id":"no","nombre":"No","frase":"Cuando no estás en tu casa"}],"orden":5},{"id":"con_novia","nombre":"Con mi novia","tipo":"opcion","activo":true,"opciones":[{"id":"si","nombre":"Sí","frase":"Cuando estás con tu novia"},{"id":"no","nombre":"No","frase":"Cuando no estás con tu novia"}],"orden":6},{"id":"con_gatos","nombre":"Con mis gatos","tipo":"opcion","activo":true,"opciones":[{"id":"si","nombre":"Sí","frase":"Cuando estás con tus gatos"},{"id":"no","nombre":"No","frase":"Cuando no estás con tus gatos"}],"orden":7},{"id":"amigos","nombre":"Con mis amigos","tipo":"multiple","activo":true,"frase_alguno":"Cuando estás con algún amigo","frase_ninguno":"Cuando no estás con amigos","opciones":[{"id":"german","nombre":"German","frase":"Cuando estás con German"},{"id":"felipe","nombre":"Felipe","frase":"Cuando estás con Felipe"},{"id":"primo","nombre":"Primo","frase":"Cuando estás con tu primo"},{"id":"otros","nombre":"Otros","frase":"Cuando estás con otros amigos"}],"orden":8},{"id":"familia","nombre":"Con mi familia","tipo":"multiple","activo":true,"frase_alguno":"Cuando estás con alguien de tu familia","frase_ninguno":"Cuando no estás con tu familia","opciones":[{"id":"padre","nombre":"Padre","frase":"Cuando estás con tu padre"},{"id":"madre","nombre":"Madre","frase":"Cuando estás con tu madre"},{"id":"hermana","nombre":"Hermana","frase":"Cuando estás con tu hermana"},{"id":"hermano","nombre":"Hermano","frase":"Cuando estás con tu hermano"}],"orden":9},{"id":"bano","nombre":"Me he bañado","tipo":"opcion","activo":true,"opciones":[{"id":"si","nombre":"Sí","frase":"Cuando ya te bañaste"},{"id":"no","nombre":"No","frase":"Cuando todavía no te bañaste"}],"orden":10},{"id":"relaciones","nombre":"He tenido relaciones sexuales","tipo":"opcion","activo":true,"opciones":[{"id":"si","nombre":"Sí","frase":"Cuando tuviste relaciones sexuales"},{"id":"no","nombre":"No","frase":"Cuando no tuviste relaciones sexuales"}],"orden":11},{"id":"ocio","nombre":"Tiempo de ocio","unidad":"h","paso":0.5,"min":0,"max":24,"tipo":"numero","activo":true,"defecto":0,"frase":"Cuando tenés {rango} de ocio","rangos":[{"etiqueta":"0 h","frase":"Cuando no tenés tiempo de ocio","desde":null,"hasta":0},{"etiqueta":"hasta 2 h","desde":0.01,"hasta":2},{"etiqueta":"entre 2 y 4 h","desde":2.01,"hasta":4},{"etiqueta":"más de 4 h","desde":4.01,"hasta":null}],"orden":12},{"id":"fuera_casa","nombre":"Tiempo fuera de casa","unidad":"h","paso":0.5,"min":0,"max":24,"tipo":"numero","activo":true,"defecto":0,"frase":"Cuando pasás {rango} fuera de casa","rangos":[{"etiqueta":"0 h","frase":"Cuando no saliste de casa","desde":null,"hasta":0},{"etiqueta":"hasta 3 h","desde":0.01,"hasta":3},{"etiqueta":"entre 3 y 6 h","desde":3.01,"hasta":6},{"etiqueta":"más de 6 h","desde":6.01,"hasta":null}],"orden":13},{"id":"celular","nombre":"Uso del celular","unidad":"h","paso":0.5,"min":0,"max":24,"tipo":"numero","activo":true,"defecto":0,"frase":"Cuando usás el celular {rango}","rangos":[{"etiqueta":"0 h","frase":"Cuando no usás el celular","desde":null,"hasta":0},{"etiqueta":"hasta 2 h","desde":0.01,"hasta":2},{"etiqueta":"entre 2 y 4 h","desde":2.01,"hasta":4},{"etiqueta":"más de 4 h","desde":4.01,"hasta":null}],"orden":14},{"id":"alcohol","nombre":"Alcohol","unidad":"vasos","paso":1,"min":0,"max":20,"tipo":"numero","activo":true,"defecto":0,"frase":"Cuando tomás {rango}","rangos":[{"etiqueta":"0 vasos","frase":"Cuando no tomás alcohol","desde":null,"hasta":0},{"etiqueta":"1 a 2 vasos de alcohol","desde":1,"hasta":2},{"etiqueta":"3 a 5 vasos de alcohol","desde":3,"hasta":5},{"etiqueta":"6 o más vasos de alcohol","desde":6,"hasta":null}],"orden":15}],"examenes":[],"config":{"pin":{"salt":"cbefc34acf6d50f293efcaa32fcc540c","hash":"7f5f08c33aafd1ad21af5c8f2c4dc4b53e49a7e9ef6164c28df193bf1acd10bf"},"tema":"claro"}};
+const APP_VERSION = '20261006-1545';
+const ETQ = ['', 'Horrible', 'Extremadamente malo', 'Muy malo', 'Malo', 'Indiferente', 'Ligeramente bueno', 'Bueno', 'Muy bueno', 'Extremadamente bueno', 'Perfecto'];
+const NADIE = '__ninguno__';
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+
+/* ---------- utilidades ---------- */
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+function el(tag, a, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(a || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') e.className = v; else if (k === 'html') e.innerHTML = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else if (typeof v !== 'string' && k in e) e[k] = v; else e.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat(Infinity)) if (c != null && c !== false) e.append(c.nodeType ? c : document.createTextNode(String(c)));
+  return e;
+}
+const pad = n => String(n).padStart(2, '0');
+const dayKey = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const isoLocal = d => `${dayKey(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+const parseDay = k => { const [y, m, d] = k.slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
+const diffDays = (a, b) => Math.round((parseDay(b) - parseDay(a)) / 864e5);
+const fmtLargo = k => { const d = parseDay(k); return `${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`; };
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const f1 = v => (Math.round(v * 10) / 10).toFixed(1);
+const fnum = v => String(Math.round(v * 100) / 100);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const etiqueta = v => ETQ[clamp(Math.round(v), 1, 10)];
+const bien = (it, v) => it && it.polaridad === 'negativa' ? 11 - v : v;
+const etqItem = (it, v) => etiqueta(bien(it, v));
+const uid = () => 'm_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+function toast(t, ms = 2400) { const e = $('#toast'); e.textContent = t; e.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => e.classList.remove('show'), ms); }
+function ls(k, d) { try { const v = localStorage.getItem('sem.' + k); return v == null ? d : JSON.parse(v); } catch { return d; } }
+function lsSet(k, v) { try { localStorage.setItem('sem.' + k, JSON.stringify(v)); return true; } catch (e) { toast('⚠ No se pudo guardar en el teléfono'); return false; } }
+async function sha256(s) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
+function dialogo(titulo, cuerpo, acciones) {
+  const c = $('#dlgc'); c.innerHTML = '';
+  c.append(el('h3', { style: 'margin-bottom:8px' }, titulo), typeof cuerpo === 'string' ? el('p', { class: 'muted' }, cuerpo) : cuerpo);
+  for (const a of acciones) c.append(el('button', { class: 'btn block ' + (a.cls || ''), style: 'margin-top:8px', onclick: () => { $('#dlg').hidden = true; a.fn && a.fn(); } }, a.txt));
+  $('#dlg').hidden = false;
+}
+$('#dlg').addEventListener('click', e => { if (e.target.id === 'dlg') $('#dlg').hidden = true; });
+
+/* ---------- datos ---------- */
+let CFG = ls('cfg', null) || DEFAULTS;   // configuración (viene de la PC)
+let REGS = ls('regs', []);                // registros del teléfono: {..., enviado: 'fecha' | null}
+const guardarRegs = () => lsSet('regs', REGS);
+const tema = () => (ls('tema', null) || (CFG.config && CFG.config.tema) || 'claro');
+const aplicarTema = () => { document.documentElement.dataset.theme = tema(); $('meta[name=theme-color]').content = tema() === 'oscuro' ? '#07070b' : '#fbf7f0'; };
+const porOrden = (a, b) => (a.orden ?? 0) - (b.orden ?? 0);
+const item = id => CFG.items.find(i => i.id === id);
+const trig = id => CFG.desencadenantes.find(t => t.id === id);
+const varr = id => CFG.variables.find(v => v.id === id);
+const cats = () => CFG.categorias.filter(c => c.activo !== false).sort(porOrden);
+const itemsDe = c => CFG.items.filter(i => i.categoria === c && i.activo !== false).sort(porOrden);
+const itemsAct = () => cats().flatMap(c => itemsDe(c.id));
+const trigsAct = () => CFG.desencadenantes.filter(t => t.activo !== false).sort(porOrden);
+const varsAct = () => CFG.variables.filter(v => v.activo !== false).sort(porOrden);
+const colorIt = it => (it.color && it.color[tema()]) || '#999';
+const pendientes = () => REGS.filter(r => !r.enviado);
+function examenProx(dia) {
+  let m = null;
+  for (const e of CFG.examenes || []) { const d = diffDays(dia, e.fecha); if (d >= 0 && (!m || d < m.d)) m = { d, e }; }
+  return m;
+}
+function nombreOp(v, id) { const o = (v.opciones || []).find(o => o.id === id); return o ? o.nombre : id; }
+function textoCtx(v, x) {
+  if (v.tipo === 'opcion') return nombreOp(v, x);
+  if (v.tipo === 'multiple') return x.length ? x.map(o => nombreOp(v, o)).join(', ') : 'nadie';
+  return `${fnum(x)} ${v.unidad || ''}`.trim();
+}
+
+/* ---------- PIN ---------- */
+let buf = '';
+function armarPin() {
+  const p = $('#pad'); p.innerHTML = '';
+  for (const k of ['1', '2', '3', '4', '5', '6', '7', '8', '9', '⌫', '0', 'OK'])
+    p.append(el('button', { class: k.length > 1 || k === '⌫' ? 't' : '', onclick: () => tecla(k) }, k));
+  dots();
+}
+function dots() { const d = $('#dots'); d.innerHTML = ''; for (let i = 0; i < Math.max(4, buf.length); i++) d.append(el('span', { class: i < buf.length ? 'f' : '' })); }
+async function tecla(k) {
+  if (k === '⌫') buf = buf.slice(0, -1); else if (k === 'OK') return probar(true); else if (buf.length < 12) buf += k;
+  dots(); if (buf.length >= 4) probar(false);
+}
+async function probar(explicito) {
+  const p = CFG.config.pin;
+  if (await sha256(p.salt + buf) === p.hash) { buf = ''; dots(); abrir(); }
+  else if (explicito || buf.length >= 12) { const b = $('#pin'); b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); $('#pinmsg').textContent = 'PIN incorrecto'; buf = ''; dots(); }
+}
+function abrir() { $('#pin').hidden = true; $('#app').hidden = false; $('#pinmsg').textContent = 'Ingresá tu PIN'; if (!F) nuevoForm(); ir(vista); }
+function bloquear() { $('#app').hidden = true; $('#pin').hidden = false; }
+$('#btn-lock').onclick = bloquear;
+let oculto = 0;
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) oculto = Date.now();
+  else if (oculto && Date.now() - oculto > 5 * 60e3 && !$('#app').hidden) bloquear(); // 5 min en segundo plano → PIN
+});
+
+/* ---------- navegación ---------- */
+let vista = 'reg';
+const TITULOS = { reg: 'Registrar', hist: 'Registros', env: 'Enviar a la PC', cfg: 'Ajustes' };
+function ir(v) {
+  vista = v;
+  for (const b of $$('nav.bottom button')) b.classList.toggle('on', b.dataset.v === v);
+  for (const s of ['reg', 'hist', 'env', 'cfg']) $('#v-' + s).hidden = s !== v;
+  $('#savebar').hidden = v !== 'reg';
+  $('#titulo').textContent = TITULOS[v];
+  ({ reg: renderReg, hist: renderHist, env: renderEnv, cfg: renderCfg })[v]();
+  badge(); window.scrollTo(0, 0);
+}
+$$('nav.bottom button').forEach(b => b.onclick = () => ir(b.dataset.v));
+function badge() { const n = pendientes().length, b = $('#nb'); b.hidden = !n; b.textContent = n; }
+
+/* ---------- registrar ---------- */
+let F = null;
+function nuevoForm(r) {
+  F = { edit: null, fecha: null, vals: {}, ctx: {} };
+  if (r) {
+    F.edit = r.id; F.fecha = r.fecha;
+    for (const x of r.valores) F.vals[x.item] = { v: x.valor, d: x.desencadenante || null };
+    for (const [k, x] of Object.entries(r.contexto || {})) F.ctx[k] = Array.isArray(x) ? [...x] : x;
+  }
+}
+function contar() {
+  const n = Object.keys(F.vals).length, c = Object.keys(F.ctx).length;
+  $('#btn-guardar').textContent = F.edit ? `Guardar cambios (${n + c})` : n + c ? `Guardar  ·  ${n} ítem${n === 1 ? '' : 's'}${c ? ` + ${c} contexto` : ''}` : 'Guardar';
+  for (const e of $$('[data-cnt]')) { const ids = e.dataset.cnt.split(','); e.textContent = `${ids.filter(i => F.vals[i]).length}/${ids.length}`; }
+}
+function seccion(id, titulo, color, cuerpo, ids) {
+  const ab = ls('abiertas', { favoritos: true, contexto: true });
+  const d = el('details', { class: 'sec', open: !!ab[id] },
+    el('summary', {}, color ? el('span', { class: 'dot', style: `--c:${color}` }) : null, titulo, ids ? el('span', { class: 'cnt', 'data-cnt': ids.join(',') }) : null, el('span', { class: 'chev' }, '›')),
+    cuerpo);
+  d.addEventListener('toggle', () => { const a = ls('abiertas', {}); a[id] = d.open; lsSet('abiertas', a); });
+  return d;
+}
+function renderReg() {
+  const v = $('#v-reg'); v.innerHTML = '';
+  const dt = el('input', { type: 'datetime-local', value: (F.fecha || isoLocal(new Date())).slice(0, 16), onchange: e => { if (e.target.value) { F.fecha = e.target.value + ':00'; renderCtx(); } } });
+  const rapido = ls('rapido', true);
+  v.append(el('div', { class: 'card' },
+    F.edit ? el('div', { class: 'note', style: 'margin-bottom:10px' }, 'Editando un registro. ', el('a', { href: '#', onclick: e => { e.preventDefault(); nuevoForm(); renderReg(); } }, 'Cancelar')) : null,
+    el('div', { class: 'row' }, dt, el('button', { class: 'btn', style: 'min-height:44px;padding:8px 14px', onclick: () => { F.fecha = null; dt.value = isoLocal(new Date()).slice(0, 16); renderCtx(); } }, 'Ahora')),
+    el('div', { class: 'row', style: 'margin-top:10px' }, el('div', { class: 'pill' },
+      el('button', { class: rapido ? 'on' : '', onclick: () => { lsSet('rapido', true); renderReg(); } }, '★ Rápido'),
+      el('button', { class: rapido ? '' : 'on', onclick: () => { lsSet('rapido', false); renderReg(); } }, 'Todos')),
+      el('span', { class: 'small muted' }, 'Solo se guarda lo que toques'))));
+  if (rapido) {
+    const fav = itemsAct().filter(i => i.favorito);
+    v.append(seccion('favoritos', 'Favoritos', '#e8b500', el('div', {}, fav.length ? fav.map(filaItem) : el('p', { class: 'muted', style: 'padding:0 16px 14px' }, 'No hay favoritos. Marcalos con ★ en la app de la PC y actualizá la configuración.')), fav.map(i => i.id)));
+  } else {
+    for (const c of cats()) { const its = itemsDe(c.id); if (its.length) v.append(seccion('cat_' + c.id, c.nombre, (c.color || {})[tema()], el('div', {}, its.map(filaItem)), its.map(i => i.id))); }
+  }
+  v.append(seccion('contexto', 'Contexto', null, el('div', { id: 'ctxbox' })));
+  renderCtx(); contar();
+}
+/* slider táctil: tap = salto al punto, arrastre horizontal = ajuste, deslizar vertical = scroll */
+function slider(valor, alCambiar) {
+  const s = el('div', { class: 'sl' }, el('div', { class: 'tr' }), el('div', { class: 'fi' }), el('div', { class: 'th' }));
+  const pinta = x => { const p = (x - 1) / 9 * 100; s.children[1].style.width = p + '%'; s.children[2].style.left = p + '%'; };
+  const deX = cx => { const r = s.getBoundingClientRect(); return Math.round((1 + clamp((cx - r.left) / r.width, 0, 1) * 9) * 10) / 10; };
+  let ini = null, arrastre = false;
+  s.addEventListener('pointerdown', e => { ini = { x: e.clientX, y: e.clientY }; arrastre = false; s.setPointerCapture(e.pointerId); });
+  s.addEventListener('pointermove', e => {
+    if (!ini) return;
+    if (!arrastre && Math.abs(e.clientX - ini.x) > 6 && Math.abs(e.clientX - ini.x) > Math.abs(e.clientY - ini.y)) arrastre = true;
+    if (arrastre) { const x = deX(e.clientX); pinta(x); alCambiar(x); }
+  });
+  s.addEventListener('pointerup', e => { if (ini && !arrastre && Math.abs(e.clientY - ini.y) < 10) { const x = deX(e.clientX); pinta(x); alCambiar(x); } ini = null; });
+  s.addEventListener('pointercancel', () => { ini = null; });
+  pinta(valor);
+  return { el: s, pinta };
+}
+function filaItem(it) {
+  const row = el('div', { class: 'it', style: `--c:${colorIt(it)}` });
+  const val = el('span', { class: 'it-v' });
+  const x = el('button', { class: 'x', 'aria-label': 'Des-registrar', onclick: () => { delete F.vals[it.id]; sl.pinta(5.5); act(); } }, '✕');
+  const chips = el('div', { class: 'chips' });
+  const sl = slider(F.vals[it.id] ? F.vals[it.id].v : 5.5, v => { const s = F.vals[it.id] || (F.vals[it.id] = { d: null }); s.v = v; act(); });
+  function act() {
+    const s = F.vals[it.id];
+    row.classList.toggle('u', !s);
+    val.innerHTML = s ? `<b>${f1(s.v)}</b> · ${etqItem(it, s.v)}` : '— sin registrar';
+    x.style.visibility = s ? 'visible' : 'hidden';
+    const k = s ? 'on' + s.d : '';
+    if (chips.dataset.k !== k) {
+      chips.dataset.k = k; chips.innerHTML = '';
+      if (s) for (const t of trigsAct()) chips.append(el('button', { class: 'chip' + (s.d === t.id ? ' on' : ''), onclick: () => { s.d = s.d === t.id ? null : t.id; act(); } }, t.nombre));
+    }
+    contar();
+  }
+  row.append(el('div', { class: 'it-h' }, el('span', { class: 'dot' }), el('span', { class: 'it-n' }, it.nombre), val, x), sl.el,
+    el('div', { class: 'hint' }, it.polaridad === 'negativa' ? `1 = nada · 10 = máximo (más alto = peor)` : '1 = nada · 10 = máximo'), chips);
+  act();
+  return row;
+}
+function renderCtx() {
+  const b = $('#ctxbox'); if (!b) return; b.innerHTML = '';
+  for (const v of varsAct()) b.append(v.tipo === 'examen' ? filaExamen(v) : v.tipo === 'opcion' || v.tipo === 'multiple' ? filaOpcion(v) : filaNum(v));
+  contar();
+}
+function cabCtx(v, extra) {
+  return el('div', { class: 'it-h' }, el('span', { class: 'it-n' }, v.nombre), el('span', { class: 'spacer' }), extra,
+    v.id in F.ctx ? el('button', { class: 'x', onclick: () => { delete F.ctx[v.id]; renderCtx(); } }, '✕') : null);
+}
+function filaNum(v) {
+  const reg = v.id in F.ctx;
+  const base = reg ? F.ctx[v.id] : (v.defecto ?? v.min);
+  const set = x => { F.ctx[v.id] = Math.round(clamp(Math.round(x / v.paso) * v.paso, v.min, v.max) * 100) / 100; renderCtx(); };
+  const eq = reg && v.equivalencia ? ` (${fnum(F.ctx[v.id] * v.equivalencia.factor)} ${v.equivalencia.unidad})` : '';
+  return el('div', { class: 'ctx' + (reg ? '' : ' u') }, cabCtx(v),
+    el('div', { class: 'row', style: 'margin-top:6px' },
+      el('div', { class: 'step' }, el('button', { onclick: () => set(base - v.paso) }, '−'),
+        el('span', { class: 'val', onclick: () => { if (!reg) set(base); } }, reg ? `${fnum(F.ctx[v.id])} ${v.unidad || ''}` : `${fnum(base)} ${v.unidad || ''}`),
+        el('button', { onclick: () => set(base + v.paso) }, '+')),
+      el('span', { class: 'small muted' }, reg ? eq : `sin registrar · tocá el ${fnum(base)} para registrarlo así`)));
+}
+function filaExamen(v) {
+  const dia = (F.fecha || isoLocal(new Date())).slice(0, 10), p = examenProx(dia);
+  const auto = !(CFG.examenes || []).length ? 'Sin exámenes cargados (se cargan en la PC)' : p ? `Automático: ${p.d} día${p.d === 1 ? '' : 's'} (${p.e.nombre})` : 'No hay exámenes próximos';
+  const reg = v.id in F.ctx;
+  return el('div', { class: 'ctx' }, cabCtx(v), el('div', { class: 'small muted' }, auto),
+    el('div', { class: 'row', style: 'margin-top:6px' },
+      el('button', { class: 'chip' + (reg ? ' on' : ''), onclick: () => { if (reg) delete F.ctx[v.id]; else F.ctx[v.id] = p ? p.d : 7; renderCtx(); } }, 'Sobrescribir'),
+      reg ? el('div', { class: 'step' }, el('button', { onclick: () => { F.ctx[v.id] = Math.max(0, F.ctx[v.id] - 1); renderCtx(); } }, '−'), el('span', { class: 'val' }, `${F.ctx[v.id]} días`), el('button', { onclick: () => { F.ctx[v.id]++; renderCtx(); } }, '+')) : null));
+}
+function filaOpcion(v) {
+  const multi = v.tipo === 'multiple', x = F.ctx[v.id];
+  const ops = (v.opciones || []).map(o => [o.id, o.nombre]); if (multi) ops.push([NADIE, 'Nadie']);
+  const click = id => {
+    if (!multi) { if (x === id) delete F.ctx[v.id]; else F.ctx[v.id] = id; }
+    else if (id === NADIE) { if (Array.isArray(x) && !x.length) delete F.ctx[v.id]; else F.ctx[v.id] = []; }
+    else {
+      const cur = Array.isArray(x) ? [...x] : []; const i = cur.indexOf(id); i >= 0 ? cur.splice(i, 1) : cur.push(id);
+      const orden = (v.opciones || []).map(o => o.id); cur.sort((a, b) => orden.indexOf(a) - orden.indexOf(b));
+      if (cur.length) F.ctx[v.id] = cur; else delete F.ctx[v.id];
+    }
+    renderCtx();
+  };
+  const on = id => multi ? (Array.isArray(x) && (id === NADIE ? !x.length : x.includes(id))) : x === id;
+  return el('div', { class: 'ctx' + (x === undefined ? ' u' : '') }, cabCtx(v, x === undefined ? el('span', { class: 'small muted' }, multi ? 'podés marcar varios' : 'elegí uno') : null),
+    el('div', { class: 'chips wrap' }, ops.map(([id, n]) => el('button', { class: 'chip' + (on(id) ? ' on' : ''), style: id === NADIE ? '--c:var(--muted)' : '', onclick: () => click(id) }, n))));
+}
+$('#btn-guardar').onclick = () => {
+  const valores = Object.entries(F.vals).filter(([k]) => item(k)).map(([k, s]) => ({ item: k, valor: Math.round(s.v * 10) / 10, desencadenante: s.d || null }));
+  const contexto = {}; for (const [k, x] of Object.entries(F.ctx)) if (varr(k)) contexto[k] = x;
+  if (!valores.length && !Object.keys(contexto).length) { toast('Tocá al menos un deslizador o dato'); return; }
+  const ahora = isoLocal(new Date());
+  if (F.edit) {
+    const r = REGS.find(r => r.id === F.edit);
+    if (r) { const ya = !!r.enviado; Object.assign(r, { fecha: F.fecha || r.fecha, valores, contexto, modificado: ahora, enviado: null });
+      toast(ya ? '✓ Cambios guardados · se reenvían en el próximo envío' : '✓ Cambios guardados'); }
+  } else {
+    REGS.push({ id: uid(), fecha: F.fecha || ahora, valores, contexto, demo: false, origen: 'movil', creado: ahora, modificado: ahora, enviado: null });
+    toast(`✓ Guardado · ${valores.length} ítem${valores.length === 1 ? '' : 's'}${Object.keys(contexto).length ? ' + contexto' : ''}`);
+  }
+  REGS.sort((a, b) => a.fecha < b.fecha ? -1 : 1);
+  guardarRegs(); nuevoForm(); renderReg(); badge(); window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+/* ---------- registros ---------- */
+let histDias = 7;
+function renderHist() {
+  const v = $('#v-hist'); v.innerHTML = '';
+  const desde = dayKey(new Date(Date.now() - (histDias - 1) * 864e5));
+  const recs = REGS.filter(r => r.fecha.slice(0, 10) >= desde).slice().reverse();
+  v.append(el('div', { class: 'card row' }, el('div', { class: 'pill' }, [[1, 'Hoy'], [7, '7 días'], [30, '30 días']].map(([d, t]) => el('button', { class: histDias === d ? 'on' : '', onclick: () => { histDias = d; renderHist(); } }, t))),
+    el('span', { class: 'small muted' }, `${recs.length} registro${recs.length === 1 ? '' : 's'}`)));
+  if (!recs.length) { v.append(el('p', { class: 'muted', style: 'text-align:center;margin-top:30px' }, 'No hay registros en este período en el teléfono.')); return; }
+  let dia = null, card = null;
+  for (const r of recs) {
+    const k = r.fecha.slice(0, 10);
+    if (k !== dia) { dia = k; card = el('div', { class: 'card' }, el('h3', { style: 'font-size:.95rem;margin-bottom:4px' }, cap(fmtLargo(k)))); v.append(card); }
+    const vals = r.valores.map(x => { const it = item(x.item); return it ? `<span style="color:${colorIt(it)}">●</span> ${it.nombre} <b>${f1(x.valor)}</b>` : ''; }).filter(Boolean).join(' · ');
+    const ctx = Object.entries(r.contexto || {}).map(([k2, x]) => { const vv = varr(k2); return vv ? `${vv.nombre}: ${textoCtx(vv, x)}` : ''; }).filter(Boolean).join(' · ');
+    card.append(el('div', { class: 'rec' }, el('div', { class: 'h' }, r.fecha.slice(11, 16)),
+      el('div', { class: 'b' }, el('div', { html: vals || '<span class="muted">Solo contexto</span>' }), ctx ? el('div', { class: 'small muted', style: 'margin-top:3px' }, ctx) : null,
+        el('div', { class: 'row', style: 'margin-top:8px;gap:8px' },
+          el('span', { class: 'st ' + (r.enviado ? 'e' : 'p') }, r.enviado ? '✓ enviado' : '⏳ pendiente'), el('span', { class: 'spacer' }),
+          el('button', { class: 'chip', onclick: () => { nuevoForm(r); ir('reg'); } }, 'Editar'),
+          el('button', { class: 'chip', style: 'color:var(--danger)', onclick: () => borrar(r) }, 'Borrar')))));
+  }
+}
+function borrar(r) {
+  dialogo('Borrar registro', r.enviado ? 'Este registro ya se envió a la PC: si lo borrás acá, también borralo en la app de la PC (Historial).' : '¿Borrar este registro del teléfono?',
+    [{ txt: 'Borrar', cls: 'danger', fn: () => { REGS = REGS.filter(x => x !== r); guardarRegs(); renderHist(); badge(); } }, { txt: 'Cancelar' }]);
+}
+
+/* ---------- enviar a la PC ---------- */
+function paquete(recs) {
+  const limpio = recs.map(({ enviado, ...r }) => r);
+  return { schema: 'seguimiento-emocional', version: 2, app: 'movil', tipo: 'envio_movil', exportado: isoLocal(new Date()),
+    categorias: CFG.categorias, items: CFG.items, desencadenantes: CFG.desencadenantes, variables: CFG.variables, examenes: CFG.examenes || [],
+    registros: limpio, config: {} };
+}
+async function enviar(recs, marcar = true) {
+  if (!recs.length) { toast('No hay registros para enviar'); return; }
+  const ahora = new Date();
+  const nombre = `movil_${dayKey(ahora)}_${pad(ahora.getHours())}${pad(ahora.getMinutes())}${pad(ahora.getSeconds())}.json`;
+  const json = JSON.stringify(paquete(recs));
+  const file = new File([json], nombre, { type: 'application/json' });
+  try {
+    if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file] });
+    else { const a = el('a', { href: URL.createObjectURL(file), download: nombre }); document.body.append(a); a.click(); a.remove(); }
+  } catch (e) {
+    if (e.name === 'AbortError') { toast('Envío cancelado: los registros siguen pendientes'); return; }
+    toast('⚠ ' + e.message); return;
+  }
+  if (marcar) { const st = isoLocal(ahora); for (const r of recs) r.enviado = st; guardarRegs(); lsSet('ultimoEnvio', st); }
+  toast(`✓ ${recs.length} registro${recs.length === 1 ? '' : 's'} listo${recs.length === 1 ? '' : 's'} para la PC`, 3200);
+  renderEnv(); badge();
+}
+function renderEnv() {
+  const v = $('#v-env'); v.innerHTML = '';
+  const p = pendientes(), ult = ls('ultimoEnvio', null);
+  v.append(el('div', { class: 'card', style: 'text-align:center' },
+    el('div', { style: 'font-size:3rem;font-weight:750;font-variant-numeric:tabular-nums' }, p.length),
+    el('div', { class: 'muted' }, `registro${p.length === 1 ? '' : 's'} pendiente${p.length === 1 ? '' : 's'} de enviar`),
+    el('button', { class: 'btn primary block', style: 'margin-top:14px;min-height:56px;font-size:1.08rem', disabled: !p.length, onclick: () => enviar(p) }, '⇪  Enviar a la PC'),
+    el('div', { class: 'small muted', style: 'margin-top:10px' }, ult ? `Último envío: ${cap(fmtLargo(ult))} ${ult.slice(11, 16)}` : 'Todavía no enviaste nada')));
+  v.append(el('div', { class: 'card' }, el('h3', {}, 'Cómo enviar'),
+    el('ol', { class: 'small', style: 'padding-left:18px;margin:8px 0 0' },
+      el('li', {}, 'Tocá ', el('b', {}, 'Enviar a la PC'), '.'),
+      el('li', {}, 'En el menú de compartir elegí ', el('b', {}, 'Drive'), ' (o ', el('b', {}, 'Guardar en Archivos → Google Drive'), ').'),
+      el('li', {}, 'Guardalo en la carpeta ', el('b', {}, 'SeguimientoEmocional'), '.'),
+      el('li', {}, 'En la PC tocá ', el('b', {}, '📱 Importar desde celular'), '.')),
+    el('p', { class: 'note', style: 'margin-top:10px' }, 'Si cancelás el menú, los registros quedan pendientes. Si dudás de que haya llegado, podés reenviar: la PC no duplica registros.')));
+  v.append(el('div', { class: 'card' }, el('h3', {}, 'Reenviar'),
+    el('p', { class: 'small muted' }, 'Por si un envío no llegó a Drive.'),
+    el('div', { class: 'row' },
+      el('button', { class: 'btn', onclick: () => enviar(REGS.filter(r => r.fecha.slice(0, 10) === dayKey(new Date()))) }, 'Todo lo de hoy'),
+      el('button', { class: 'btn', onclick: () => enviar(REGS.filter(r => diffDays(r.fecha.slice(0, 10), dayKey(new Date())) < 7)) }, 'Últimos 7 días'))));
+}
+
+/* ---------- ajustes ---------- */
+function renderCfg() {
+  const v = $('#v-cfg'); v.innerHTML = '';
+  const fi = el('input', { type: 'file', accept: '.json,application/json', hidden: true, onchange: async e => { const f = e.target.files[0]; e.target.value = ''; if (f) importarConfig(await f.text()); } });
+  v.append(el('div', { class: 'card' }, el('h3', {}, 'Configuración desde la PC'),
+    el('p', { class: 'small muted' }, 'Ítems, opciones, desencadenantes, exámenes y PIN se editan en la app de la PC, que los deja en ',
+      el('b', {}, 'Google Drive → SeguimientoEmocional → config_movil.json'), '. Cuando cambies algo allá, actualizá acá.'),
+    fi, el('button', { class: 'btn primary block', onclick: () => fi.click() }, 'Actualizar configuración'),
+    el('p', { class: 'small muted' }, `Configuración actual: ${CFG.exportado ? 'de la PC, ' + CFG.exportado.replace('T', ' ').slice(0, 16) : 'la de fábrica (PIN 1102)'} · ${itemsAct().length} ítems · ${varsAct().length} variables`)));
+  v.append(el('div', { class: 'card' }, el('h3', {}, 'Tema'), el('div', { class: 'pill', style: 'margin-top:8px' },
+    el('button', { class: tema() === 'claro' ? 'on' : '', onclick: () => { lsSet('tema', 'claro'); aplicarTema(); renderCfg(); } }, 'Claro – pastel'),
+    el('button', { class: tema() === 'oscuro' ? 'on' : '', onclick: () => { lsSet('tema', 'oscuro'); aplicarTema(); renderCfg(); } }, 'Oscuro – neón'))));
+  const enviados = REGS.filter(r => r.enviado).length;
+  v.append(el('div', { class: 'card' }, el('h3', {}, 'Datos en el teléfono'),
+    el('p', { class: 'small muted' }, `${REGS.length} registros guardados (${enviados} ya enviados). Los enviados de hace más de 60 días se borran solos del teléfono: ya están en la PC.`),
+    el('p', { class: 'note' }, 'Importante: si borrás la app de la pantalla de inicio, iOS borra sus datos. Enviá a la PC antes.'),
+    el('p', { class: 'small muted' }, `Versión ${APP_VERSION}`)));
+}
+function importarConfig(txt) {
+  let d;
+  try { d = JSON.parse(txt); } catch { toast('⚠ El archivo no es un JSON válido'); return; }
+  if (d.schema !== 'seguimiento-emocional' || !Array.isArray(d.items) || !Array.isArray(d.variables)) { toast('⚠ No es un archivo de configuración de Seguimiento Emocional'); return; }
+  if ((d.version || 1) > 2) { toast('⚠ Versión de datos más nueva que esta app: recargá la app'); return; }
+  if ((d.version || 1) < 2) { toast('⚠ Archivo viejo (v1): actualizá la app de la PC'); return; }
+  CFG = { categorias: d.categorias || [], items: d.items, desencadenantes: d.desencadenantes || [], variables: d.variables, examenes: d.examenes || [],
+    config: { pin: (d.config && d.config.pin) || CFG.config.pin, tema: (d.config && d.config.tema) || 'claro' }, exportado: d.exportado || isoLocal(new Date()) };
+  lsSet('cfg', CFG); nuevoForm(); aplicarTema(); renderCfg();
+  toast('✓ Configuración actualizada');
+}
+
+/* ---------- inicio ---------- */
+(function init() {
+  // limpieza: registros ya enviados hace más de 60 días
+  const lim = dayKey(new Date(Date.now() - 60 * 864e5));
+  const antes = REGS.length; REGS = REGS.filter(r => !r.enviado || r.fecha.slice(0, 10) >= lim); if (REGS.length !== antes) guardarRegs();
+  aplicarTema(); armarPin();
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+})();
+</script>
+</body>
+</html>
